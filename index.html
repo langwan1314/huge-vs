@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>External hosting</title>
+    <meta name="keywords" content="webXR" />
+    <meta name="description" content="A #webXR experience" />
+
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, shrink-to-fit=no" />
+    <meta name="mobile-web-app-capable" content="yes"> <!-- fullscreen if added in homescreen -->
+	<meta name="google" value="notranslate">
+
+    <meta name="theme-color" content="#eeeeee" />
+
+
+    <link rel="stylesheet" type="text/css" href="css/default.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/inter/stylesheet.css" />
+
+    <style>
+        #preloader{
+            z-index:101;
+            position:fixed;
+            top:0;left:0;right:0;bottom:0;
+            background:#e0e0e0;
+        }
+        #preloader >div{
+            position:absolute;
+            top:50%;left:50%;
+            transform:translate(-50%,-50%);
+        }
+        #preloader .spinner{
+            margin:auto;
+            width:100px;
+            height:100px;
+            position:relative;
+            border-radius:50%;
+            border:4px solid white;
+            border-right:4px solid red;
+            border-bottom:4px solid red;
+            border-left:4px solid red;
+            animation:spinPreloader 1s ease infinite;
+        }
+        @keyframes spinPreloader{
+            0% {transform:rotateZ(0);}
+            100% {transform:rotateZ(359deg);}
+        }
+        #access, #noAccess, #noCamera, #desktop, #startPanel{
+            display:none;
+        }
+
+        /* player styles */
+       footer, #redirection, h1, p, .credits, .statesModule h3{color:#1D1718;}
+       .brandingBg{background:#eeeeee;}
+       .button{background:#ff0000;color:#ffffff;}
+       .button.active, #orientation li.active{background:#00bde6;}
+       .b_close::before, .b_close::after{background:#1D1718;}
+       #desktop .content h1{color:#1D1718;}
+       #desktop .content p *, #desktop .content .top.right .url{color:#1D1718;}
+       #desktop.brandingBg{background:#eeeeee;}
+       #desktop .content .top.right .white{background:#ffffff;}
+       #desktop .content .top.right .white h3{background:#505050!important;color:#ffffff!important;}
+       #desktop .button{background:#ff0000;color:#ffffff;}
+       #errorScreen{background:#eeeeee;}
+       #introScreen{background-color:#e0e0e0;}
+       #introScreen{background-size:cover;}
+       #introScreen span.introButton{background:#505050;color:#ffffff;}
+       .noWebp #introScreen{}
+       #preloader.brandingBg{background:#eeeeee;}
+       #preloader .spinner{
+       border:5px solid #ff0000;border-right:5px solid #ffffff;border-bottom:5px solid #ffffff;border-left:5px solid #ffffff;}
+       #access.brandingBg{background:#eeeeee;}
+       #sceneLoader.brandingBg{background-color:#eeeeee;}
+       #sceneLoader .filler{background:#ffffff;}
+       #sceneLoader .filler .fill{background:#ff0000;}
+       #sceneLoader, #sceneLoader h1, #access{color:#ffffff;}
+       #sceneLoader h1{color:#ffffff;}
+       #startPanel{background-color:#eeeeee;}
+       #startPanel span.startButton, #startPanel .backButton{background:#e8e8e8;color:#000000;}
+       #sessionLoader{background:#eeeeee;}
+       #startPanel span.startButton{font-size:18px;}
+       #sceneLoader h1{text-shadow: 0 0 4px rgba(0,0,0,.7)}
+       #sceneLoader, #startPanel{background-image:url("player/loading-bg.webp");background-size:cover;}
+       .noWebp #sceneLoader, .noWebp #startPanel{background-image:url("player/loading-bg.png");}
+       #sceneLoader .loadingBar{top:90%;}
+       body.ddd footer .title{background:none;}
+       body.ddd footer .title h1{color:#404040;}
+       footer .module.brandingBg{background:rgba(238,238,238,1);}
+       footer .title.brandingBg{background:rgba(238,238,238,1);}
+       footer .module .brandingColor{color:#1D1718;}
+       footer h1{color:#1D1718;}
+       footer {margin:0px;}
+       #helper{border-color:#eeeeee;}
+       #helper .brandingBg{background:#eeeeee;}
+       #helper p{color:#1d1718;}
+       #helper .button{background:#ff0000;color:#ffffff;}
+       .button{border-radius:4px;}
+       #startPanel span.startButton, #startPanel .backButton{border-radius:4px;}
+       .button{box-shadow:none;}
+       .startButton{box-shadow:none;}
+    </style>
+
+
+
+</head>
+
+<body class="ar loading slam shareButtons inter">
+    <!--  -->
+
+    <div id="mainLog"></div>
+        <canvas id="threejs"></canvas>
+
+    <div id="access" class="brandingBg"><div><p data-text="allowAccess">Please allow access to the camera</p></div></div>
+
+    <div id="sceneLoader" class="brandingBg">
+        <div>
+			<h1>Worker Demo</h1>
+        </div>
+        <div class="loadingBar">
+            <p data-text="loadingTheMagic">loading</p>
+            <div class="filler"><div id="fill" class="fill"></div></div>
+            <div class="poweredBy"><span>Powered by XR.+</span></div>        </div>
+            </div>
+
+    <div id="startPanel" class="brandingBg">
+        <div class="cookieInfo">We use cookies for anonymous analytics purpose. <br/>By starting this experience you accept their use.</div>
+    </div>
+
+    <div id="introScreen"></div>
+
+    <div id="preloader" class="brandingBg"><div><div class="spinner"></div></div></div>
+
+    <div id="noAccess">
+        <div>
+            <h3 data-text="noAccess">No camera access</h3>
+            <p id="yesCamera" data-text="yesCamera">Accessing the camera is required for augmented reality experiences</p>
+            <p id="noCamera" data-text="noCamera">This device has no camera</p>
+            <a data-text="tryAgain" class="button" id="tryAgain" target="_self" href="https://xr.plus/it9">try again</a>
+        </div>
+    </div>
+
+        <div id="desktop" class="brandingBg">
+
+                <div class="content noMarker">
+
+                <div class="sceneTitle">
+                    <img src="project/p512.jpg" alt="web AR XR+ Worker Demo" />
+                    <h1>Worker Demo</h1>
+                </div>
+
+
+                <div class="top right">
+                    <div class="white">
+                        <h3 data-text="betterOnMobile">This is an augmented reality experience for mobile</h3>
+                        <p>
+                            <span class="visit" data-text="visitOnMobile">On your phone web browser, visit </span>
+                            <span class="url">xr.plus/it9</span>
+                        </p>
+                    </div>
+                                        <div class="video">
+                    </div>
+                                    </div>
+
+
+                <div class="right buttons">
+                    <a data-text="visitHomepage" class="button" href="/">visit XR+ homepage</a>                    <span data-text="continueAnyway" class="button" id="b_continueOnDesktop">continue anyway</span>
+                </div>
+
+            </div>
+
+        </div>
+        <div id="logo"><img src="player/logo.png" alt="" /></div><div id="topRightButtons">
+    <span id="b_share"><img src="assets/icons/icon-share.svg"></span></div>
+    <div id="helper">        <div class="brandingBg">
+                            <p data-text="direct">Point the camera to this image</p>
+                <img class="patternPreview hint" src="" alt="" />
+                            <span class="button" id="b_marker" data-text="help">Help</span>
+        </div>
+    </div>
+
+    <footer>
+        <div id="pages" class="brandingBg"></div>
+        <div class="modules"></div>
+        <div id="sceneSelector"></div>
+                        <div class="title brandingBg">
+            <div>
+                        </div>
+        </div>
+    </footer>
+
+    <div id="more" class="brandingBg">
+        <div>
+        </div>
+        <span class="b_close"></span>
+    </div><!-- /more -->
+
+    <div id="redirection" class="brandingBg">
+        <div></div>
+        <span class="b_close"></span>
+    </div>
+
+    <div id="about" class="brandingBg">
+        <div></div>
+        <span class="b_close"></span>
+    </div>
+
+    <div id="embedContent">
+        <div class="brandingBg"></div>
+        <span class="b_close white"></span>
+    </div>
+
+
+    <video id="bgVideo" autoplay muted playsinline></video>
+
+    <script>
+        var _language = navigator.language || navigator.userLanguage;
+        const _domainMin = "xr.plus";
+        const _rootDirectory = "https://xr.plus/";
+        const _requestedWith = null;
+
+        var _patternPageURL = 'https://xr.plus/p/gaf';
+        var _isVertical = false;
+        const _desktopEnabled = true;
+        const _skipDesktopAR = false;
+        const _trackingMode = "slam";
+        const _isNFT = true;
+                var stats = null;
+        const _config = {
+			shareTitle:"XR.+ Demo 3",shareText:"A #webXR experience",sceneURL:"it9",mode:"ar",
+    		//folder:"/pardev/",
+            externalHost:true,
+    		//projectData:"https://xr.plus/selfhosting/it9/export-data.txt",
+    		folder:"project/",//used?
+    		projectFolder:"project/",
+            playerFolder:"player/"
+        };
+        Object.freeze(_config);
+
+    </script>
+
+    <script> const _pTexts = null; </script>
+    <script src="js/browser-detection.min.js"></script>
+	<script src="js/libs/jszip330.min.js"></script>
+	<script src="js/libs/jszip-utils.min20200419.js"></script>
+	<script src="js/3-126.js"></script>
+	<script src="js/process-slam-dist.js"></script>
+
+    </body>
+</html>
